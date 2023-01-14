@@ -1,0 +1,7 @@
+[package]
+name = "cse251_week2_assignment"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+futures = "0.3.25"
