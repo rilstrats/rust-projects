@@ -2,58 +2,52 @@ use rand::Rng;
 
 fn main() {
     let mut rng = rand::thread_rng();
-    let x: u32 = rng.gen_range(0..255);
-    let y: u32 = rng.gen_range(0..255);
-    let acc: u32 = 0;
+    let x: u32 = rng.gen();
+    let y: u32 = rng.gen();
 
-    println!("{} * {} = {}", x, y, x * y);
-    println!("Russian Peasant Multiplication = {}", rp_mult(x, y, acc));
-    assert_eq!(rp_mult(x, y, acc), x * y)
+    println!("{} * {} = {}", x, y, x as u64 * y as u64);
+    println!("Russian Peasant Multiplication = {}", rp_mult(x, y));
 }
 
-fn rp_mult(x: u32, y: u32, acc: u32) -> u32 {
+fn rp_mult(x: u32, y: u32) -> u64 {
+    _rp_mult(x, y as u64, 0)
+}
+
+fn _rp_mult(x: u32, y: u64, acc: u64) -> u64 {
     match x {
-        0 => 0,                                            // x equals 0
-        1 => acc + y,                                      // x equals 1
-        x if x % 2 == 1 => rp_mult(x / 2, y * 2, acc + y), // x is odd
-        _ => rp_mult(x / 2, y * 2, acc),                   // x is even
+        0 => 0,                                             // x equals 0
+        1 => acc + y,                                       // x equals 1
+        x if x % 2 == 1 => _rp_mult(x / 2, y * 2, acc + y), // x is odd
+        _ => _rp_mult(x / 2, y * 2, acc),                   // x is even
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use rand::Rng;
+#[test]
+fn rp_mult_if_x_and_y_are_max() {
+    assert_eq!(
+        rp_mult(u32::MAX, u32::MAX),
+        u32::MAX as u64 * u32::MAX as u64
+    );
+}
 
-    #[test]
-    fn same_as_mult() {
-        let mut rng = rand::thread_rng();
-        let x: u32 = rng.gen_range(0..255);
-        let y: u32 = rng.gen_range(0..255);
-        let acc: u32 = 0;
+#[test]
+fn rp_mult_if_x_is_zero() {
+    assert_eq!(rp_mult(0, u32::MAX), 0);
+}
 
-        assert_eq!(rp_mult(x, y, acc), x * y);
-    }
+#[test]
+fn rp_mult_if_x_is_one() {
+    assert_eq!(rp_mult(1, u32::MAX), u32::MAX as u64);
+}
 
-    #[test]
-    fn return_zero_if_x_is_zero() {
-        let mut rng = rand::thread_rng();
-        let x: u32 = 0;
-        let y: u32 = rng.gen_range(0..255);
-        let acc: u32 = 0;
+#[test]
+fn rp_mult_if_y_is_zero() {
+    assert_eq!(rp_mult(u32::MAX, 0), 0);
+}
 
-        assert_eq!(rp_mult(x, y, acc), 0);
-    }
-
-    #[test]
-    fn return_zero_if_y_is_zero() {
-        let mut rng = rand::thread_rng();
-        let x: u32 = rng.gen_range(0..255);
-        let y: u32 = 0;
-        let acc: u32 = 0;
-
-        assert_eq!(rp_mult(x, y, acc), 0);
-    }
+#[test]
+fn rp_mult_if_y_is_one() {
+    assert_eq!(rp_mult(u32::MAX, 1), u32::MAX as u64);
 }
 
 // fn russ_peas_mult(x: u32, y: u32, acc: u32) -> u32 {
