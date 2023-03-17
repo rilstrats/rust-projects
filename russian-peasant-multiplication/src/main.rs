@@ -23,7 +23,7 @@ fn _rp_mult(x: u32, y: u64, acc: u64) -> u64 {
 }
 
 #[test]
-fn rp_mult_if_x_and_y_are_max() {
+fn rp_mult_if_both_are_max() {
     assert_eq!(
         rp_mult(u32::MAX, u32::MAX),
         u32::MAX as u64 * u32::MAX as u64
